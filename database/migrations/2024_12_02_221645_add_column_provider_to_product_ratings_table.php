@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('product_ratings', function (Blueprint $table) {
-            //
+            $table->foreignId('providers');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('product_ratings', function (Blueprint $table) {
-            //
+            $table->dropForeign('providers');
         });
     }
 };

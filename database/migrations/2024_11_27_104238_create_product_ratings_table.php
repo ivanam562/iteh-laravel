@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('product_ratings', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('user');
+            $table->foreignId('product');
+            $table->integer('rating');
+            $table->text('note')->nullable();
         });
     }
 
