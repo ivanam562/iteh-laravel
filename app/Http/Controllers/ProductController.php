@@ -44,7 +44,19 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:150|unique:products',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json($validator->errors());
+    }
+
+    $product = Product::create([
+        'name' => $request->name,
+    ]);
+
+    return response()->json(['message' => 'Product is created successfully.', 'product' => new ProductResource($product)]);
     }
 
     /**
@@ -78,7 +90,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-       
+        
     }
 
     /**
@@ -89,5 +101,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        
     }
 }
