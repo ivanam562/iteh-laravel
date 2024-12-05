@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->timestamps();
+            if (!Schema::hasColumn('products', 'created_at')) {
+                $table->timestamps();
+            }
         });
     }
 

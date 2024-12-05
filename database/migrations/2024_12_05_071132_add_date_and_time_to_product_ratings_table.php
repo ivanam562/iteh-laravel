@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('product_ratings', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'created_at')) {
-                $table->timestamps();
-            }
+            $table->timestamp('date_and_time')->nullable(); 
         });
     }
 
@@ -24,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('product_ratings', function (Blueprint $table) {
-            $table->dropTimestamps();
+            $table->dropColumn('date_and_time');
         });
     }
 };
