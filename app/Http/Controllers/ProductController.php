@@ -88,9 +88,22 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
-    {
-        
+    
+    public function update(Request $request, $id){
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json('Product not found.', 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:150|unique:products,name,' . $product->id,
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+            $product->name = $request->name;
+            product->save();
+        return response()->json(['Product is updated successfully.', new ProductResource($product)]);
     }
 
     /**
@@ -101,6 +114,13 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        
+        $productRatings = ProductRating::where('product', $product->id)->get();
+        if ($productRatings->count() > 0) {
+            return response()->json('You cannot delete products that have product ratings.');
+        }
+
+        $product->delete();
+
+    return response()->json('Product is deleted successfully.');
     }
 }
