@@ -4,11 +4,23 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\ProductRatingController;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->get('/myprofile', function (Request $request) {
+    return new UserResource($request->user());
 });
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    
+    Route::post('/register', [AuthController::class, 'register']); 
+    Route::post('/logout', [AuthController::class, 'logout']);  
+
+});
+Route::post('/login', [AuthController::class, 'login']);
+Route::resource('users', UserController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
 Route::resource('products', ProductController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 Route::resource('productRating', ProductRatingController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
