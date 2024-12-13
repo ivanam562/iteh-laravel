@@ -25,6 +25,16 @@ class ProviderController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -39,9 +49,11 @@ class ProviderController extends Controller
             'email' => 'required|email|unique:providers',
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
             return response()->json($validator->errors());
-        }
+
+        if(auth()->user()->isUser())
+            return response()->json('You are not authorized to create new providers.'); 
 
         $provider = Provider::create([
             'name' => $request->name,
@@ -65,6 +77,17 @@ class ProviderController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Provider  $provider
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Provider $provider)
+    {
+        //
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -73,26 +96,29 @@ class ProviderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $provider = Provider::findOrFail($id); 
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:150',
-            'phone_number' => 'required|string|max:150|unique:providers,phone_number,' . $id,
+            'phone_number' => 'required|string|max:150|unique:providers,phone_number,' . $provider->id,
             'years_of_experience' => 'required|numeric|lte:30|gte:1',
-            'email' => 'required|email|unique:providers,email,' . $id,
+            'email' => 'required|email|unique:providers,email,' . $provider->id,
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-
-        $provider = Provider::findOrFail($id); 
-
+    
+        if (auth()->user()->isUser()) {
+            return response()->json('You are not authorized to update providers.');
+        }
         $provider->name = $request->name;
         $provider->phone_number = $request->phone_number;
         $provider->years_of_experience = $request->years_of_experience;
         $provider->email = $request->email;
-
+    
         $provider->save();
-
+    
         return response()->json(['Provider is updated successfully.', new ProviderResource($provider)]);
     }
 
@@ -102,18 +128,19 @@ class ProviderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Provider $provider)
     {
-        $provider = Provider::findOrFail($id); 
-
-        $productRatings = ProductRating::where('provider_id', $provider->id)->get(); 
-
-        if ($productRatings->count() > 0) {
+        if (auth()->user()->isUser()) {
+            return response()->json('You are not authorized to delete providers.');
+        }
+    
+        $apprat = ProductRating::where('provider', $provider->id)->get();
+        if ($apprat->count() > 0) {
             return response()->json('You cannot delete providers that have product ratings.');
         }
-
+    
         $provider->delete();
-
+    
         return response()->json('Provider is deleted successfully.');
     }
 }

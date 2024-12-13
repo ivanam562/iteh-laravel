@@ -24,6 +24,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('users', UserController::class)->only(['destroy']);  
     //samo user moze da doda, azurira ili brise proizod
     Route::resource('products', ProductController::class)->only(['store', 'update', 'destroy']); 
+    //samo user moze da doda, azurira ili brise proizod
+    Route::resource('providers', ProviderController::class)->only(['store', 'update', 'destroy']);  
 
 });
 
@@ -31,6 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::post('/login', [AuthController::class, 'login']);
 //svi mogu da pregledaju proizvode, cak iako nisu loginovani
 Route::resource('products', ProductController::class)->only(['index', 'show']);
+//svi mogu da pregledaju providere, cak iako nisu loginovani
+Route::resource('providers', ProviderController::class)->only(['index', 'show']);
+
 Route::resource('productRating', ProductRatingController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
-Route::resource('providers', ProviderController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 

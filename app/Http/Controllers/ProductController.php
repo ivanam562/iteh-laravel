@@ -118,15 +118,17 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
-    {if(auth()->user()->isUser())
-        return response()->json('You are not authorized to delete products.'); 
-
-        $apprat = ProductRating::get()->where('product', $product->id);
-        if (count($apprat) > 0)
+    {
+        if (auth()->user()->isUser()) {
+            return response()->json('You are not authorized to delete products.');
+        }
+    
+        $prodrat = ProductRating::where('product', $product->id)->get();
+        if ($prodrat->count() > 0) {
             return response()->json('You cannot delete products that have product ratings.');
-            
+        }
         $product->delete();
-
+    
         return response()->json('Product is deleted successfully.');
     }
 }
