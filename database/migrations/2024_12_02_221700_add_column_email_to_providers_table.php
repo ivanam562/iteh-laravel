@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('providers', function (Blueprint $table) {
-            $table->string('email');
+            $table->string('email')->nullable()->after('some_column');
         });
+    
     }
 
     /**
