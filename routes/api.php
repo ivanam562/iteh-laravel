@@ -16,16 +16,21 @@ Route::middleware('auth:sanctum')->get('/myprofile', function (Request $request)
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/register', [AuthController::class, 'register']); 
     Route::post('/logout', [AuthController::class, 'logout']);  
-    Route::resource('users', UserController::class)->only(['destroy']);  
+   
+     //prikaz korisnika je moguc za user-a ili za admin-a
     Route::resource('users', UserController::class)->only(['index', 'show']); 
+    //azuriranje i brisanje je moguce samo za admina
     Route::resource('users', UserController::class)->only(['update']);  
+    Route::resource('users', UserController::class)->only(['destroy']);  
+    //samo user moze da doda, azurira ili brise proizod
+    Route::resource('products', ProductController::class)->only(['store', 'update', 'destroy']); 
 
 });
 
 
 Route::post('/login', [AuthController::class, 'login']);
-
-Route::resource('products', ProductController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+//svi mogu da pregledaju proizvode, cak iako nisu loginovani
+Route::resource('products', ProductController::class)->only(['index', 'show']);
 Route::resource('productRating', ProductRatingController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 Route::resource('providers', ProviderController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 

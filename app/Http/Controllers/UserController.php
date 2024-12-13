@@ -20,12 +20,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        if(auth()->user()->isAdmin())
+        if(auth()->user()->isUser() || auth()->user()->isAdmin())
             return new UserCollection(User::all());
     }
     public function show(User $user)
     {
-        if(auth()->user()->isAdmin())
+        if(auth()->user()->isUser() || auth()->user()->isAdmin())
             return new UserResource($user);
     }
     
