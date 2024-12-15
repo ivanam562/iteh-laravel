@@ -39,6 +39,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/register', [AuthController::class, 'register']); 
 
+Route::get('products/search', [ProductController::class, 'search']);
+
 //svi mogu da pregledaju proizvode, cak iako nisu loginovani
 Route::resource('products', ProductController::class)->only(['index', 'show']);
 //svi mogu da pregledaju providere, cak iako nisu loginovani

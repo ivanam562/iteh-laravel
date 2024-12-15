@@ -10,6 +10,7 @@ use App\Models\Provider;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductCollection;
@@ -130,5 +131,20 @@ class ProductController extends Controller
         $product->delete();
     
         return response()->json('Product is deleted successfully.');
+    }
+
+    public function search(Request $request)
+    {
+        Log::info('Pretraga započeta', ['request' => $request->all()]);
+
+        $query = Product::query();
+    
+        if ($request->has('name') && !empty($request->name)) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+    
+        $products = $query->get();
+    
+        return response()->json($products);
     }
 }
