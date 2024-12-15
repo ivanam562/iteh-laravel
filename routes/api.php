@@ -9,6 +9,10 @@ use App\Http\Controllers\API\AuthController;
 
 use App\Http\Controllers\ProductRatingController;
 
+use App\Http\Controllers\UserProductRatingController;
+use App\Http\Controllers\ProviderProductRatingController;
+use App\Http\Controllers\ProductProductRatingController;
+
 Route::middleware('auth:sanctum')->get('/myprofile', function (Request $request) {
     return new UserResource($request->user());
 });
@@ -28,6 +32,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //samo user moze da doda, azurira ili brise rejting proizoda
     Route::resource('productRating', ProductRatingController::class)->only(['store', 'update', 'destroy']); 
 
+    Route::get('/myProductRating', [UserProductRatingController::class, 'myProductRating']); 
+
 });
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -40,3 +46,9 @@ Route::resource('providers', ProviderController::class)->only(['index', 'show'])
 //svi mogu da pregledaju rejtinge, cak iako nisu loginovani
 Route::resource('productRating', ProductRatingController::class)->only(['index', 'show']);
 
+
+Route::get('/users/{id}/productRating', [UserProductRatingController::class, 'index']);
+
+Route::get('/providers/{id}/productRating', [ProviderProductRatingController::class, 'index']);
+
+Route::get('/products/{id}/productRating', [ProductProductRatingController::class, 'index']);
