@@ -14,7 +14,6 @@ Route::middleware('auth:sanctum')->get('/myprofile', function (Request $request)
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/register', [AuthController::class, 'register']); 
     Route::post('/logout', [AuthController::class, 'logout']);  
    
      //prikaz korisnika je moguc za user-a ili za admin-a
@@ -26,15 +25,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('products', ProductController::class)->only(['store', 'update', 'destroy']); 
     //samo user moze da doda, azurira ili brise proizod
     Route::resource('providers', ProviderController::class)->only(['store', 'update', 'destroy']);  
+    //samo user moze da doda, azurira ili brise rejting proizoda
+    Route::resource('productRating', ProductRatingController::class)->only(['store', 'update', 'destroy']); 
 
 });
-
-
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::post('/register', [AuthController::class, 'register']); 
+
 //svi mogu da pregledaju proizvode, cak iako nisu loginovani
 Route::resource('products', ProductController::class)->only(['index', 'show']);
 //svi mogu da pregledaju providere, cak iako nisu loginovani
 Route::resource('providers', ProviderController::class)->only(['index', 'show']);
-
-Route::resource('productRating', ProductRatingController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+//svi mogu da pregledaju rejtinge, cak iako nisu loginovani
+Route::resource('productRating', ProductRatingController::class)->only(['index', 'show']);
 

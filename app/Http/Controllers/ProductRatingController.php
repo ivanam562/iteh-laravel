@@ -47,22 +47,25 @@ class ProductRatingController extends Controller
             'product' => 'required|numeric|gte:1|lte:5',
             'rating' => 'required|numeric|lte:5|gte:1',
             'note' => 'required|string|min:20',
-            'providers' => 'required|numeric|gte:1|lte:10',
+            'provider' => 'required|numeric|gte:1|lte:10',
         ]);
-        
+
         if ($validator->fails())
             return response()->json($validator->errors());
-        
+
+        if(auth()->user()->isAdmin())
+            return response()->json('You are not authorized to create new product ratings.'); 
+
         $productRating = ProductRating::create([
             'date_and_time' => $request->date_and_time,
+            'user' => auth()->user()->id,
             'product' => $request->product,
             'rating' => $request->rating,
             'note' => $request->note,
-            'providers' => $request->provider,
+            'provider' => $request->provider,
         ]);
-        
-        return response()->json(['message' => 'Product Rating is created successfully.', 'data' => new ProductRatingResource($productRating)]);
-        
+
+        return response()->json(['Product rating is created successfully.', new ProductRatingResource($productRating)]);
     }
 
     /**
@@ -103,7 +106,7 @@ class ProductRatingController extends Controller
             'product' => 'required|numeric|gte:1|lte:5',
             'rating' => 'required|numeric|lte:5|gte:1',
             'note' => 'required|string|min:20',
-            'providers' => 'required|numeric|gte:1|lte:10',
+            'provider' => 'required|numeric|gte:1|lte:10',
         ]);
 
         if ($validator->fails())
@@ -120,7 +123,7 @@ class ProductRatingController extends Controller
         $productRating->product = $request->product;
         $productRating->rating = $request->rating;
         $productRating->note = $request->note;
-        $productRating->providers = $request->provider;
+        $productRating->provider = $request->provider;
 
         $productRating->save();
 
